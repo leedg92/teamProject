@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CommentDAO">
+
+<!-- 	<select id="getCommentNum" resultType="int"> -->
+<!-- 		SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'CNUMSEQ' -->
+<!-- 	</select> -->
+
+	<select id="getComment" resultType="CommentVO">
+		select * from community_comment where comment_num = #{cnum}
+	</select>
+
+	<insert id="commentUpload" parameterType="hashmap">
+		insert into community_comment (board_num, c_userid, c_context, deleted)
+		 values (#{board_num}, #{c_userid}, #{c_context}, 0)
+	</insert>
+	
+	<select id="getCommentList" resultType="CommentVO">
+		select * from community_comment where board_num = #{Boardnum} and deleted = 0  ORDER BY comment_num DESC
+	</select>
+	
+	<update id="deleteCommentWithBoard">
+		update community_comment set deleted = 1 where board_num = #{bnum}
+	</update>
+	
+	<update id="deleteComment">
+		update community_comment set deleted = 1 where comment_num = #{cnum}
+	</update>
+	
+	<update id="modifyComment">
+		update community_comment set c_context = #{c_context} where comment_num = #{cnum}
+	</update>
+	
+	
+	
+	
+
+</mapper>

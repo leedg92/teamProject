@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="storeBoardDAO">
+
+	<!-- 보드 전체 리스트 -->
+	<select id="selectAll" resultType="board">
+		select * from storeboard where deleted=0
+	</select>
+
+	<!-- 보드 작성 -->
+	<insert id="insertBoard" parameterType="board">
+		insert into storeboard (storename, storenumber, runtime, breaktime,
+		price, foodtype, wridate, writer, viewcount, address, key, membertype, adlocationx, adlocationy)
+		values (#{storename},#{storenumber},#{runtime},
+		#{breaktime},#{price},#{foodtype},#{wridate},#{writer},
+		#{viewcount},#{address},#{key}, #{membertype}, #{adlocationx}, #{adlocationy})
+	</insert>
+	
+	<select id="selectBest" parameterType="String" resultType="board">
+      select * from storeboard order by viewcount desc 
+   </select>
+	
+	<select id="selectStore" resultType="board">
+		select * from storeboard where key=#{key}
+	</select>
+	
+	<select id="getMyStore" parameterType="String" resultType="board">
+		select * from storeboard where writer = #{userid}
+	</select>
+	
+	<update id="storeModify" parameterType="board">
+		update storeboard 
+		set 
+			storename=#{storename}, storenumber=#{storenumber}, runtime=#{runtime}, breaktime=#{breaktime},
+			price=#{price}, foodtype=#{foodtype}, address=#{address}, adlocationx=#{adlocationx}, adlocationy=#{adlocationy}
+		where 
+			key = #{key}			 
+	</update>
+	
+	<select id="place" resultType="board" parameterType="hashmap">
+		select * from storeboard where (((#{y}>adlocationx) and (adlocationx>#{y}-0.0025))or((adlocationx>#{y}) and (#{y}+0.0025>adlocationx))) and (((#{x}>adlocationy) and (adlocationy>#{x}-0.0046))or((adlocationy > #{x})and(#{x}+0.0046>adlocationy))) 
+	</select>
+	<select id="kNum" resultType="board">
+		SELECT COUNT(*) FROM Storeboard;
+	</select>
+
+	<update id="viewcount" parameterType="int">
+	update Storeboard set viewcount = (select viewcount from Storeboard where key = #{key})+1 where key = #{key}
+	</update>
+	
+	<update id="storedel">
+		update storeboard set deleted = -1 where key = #{key}
+	</update>
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="StoreTotalNumDAO">
+	<select id="Storetotalnum" resultType="Storetotal">
+		select * from StoreTotalNum
+	</select>
+	
+	<select id="selectASC" resultType="Storetotal">
+		select * from storetotalnum order by totalnumber ASC
+	</select>
+
+
+	<update id="minnum" parameterType="Storetotal">
+		update StoreTotalNum set totalnumber = #{totalnumber}-1 where totalnumber = #{totalnumber} and key = #{key}
+	</update>
+	
+	<select id="selectTotal" resultType="storetotal">
+		select * from storetotalnum where key = #{key}
+	</select>
+
+	<select id="max" resultType="int">
+		select max(totalnumber) from StoreTotalNum where key= #{key}
+	</select>
+
+	<delete id="numdelete">
+		delete from StoreTotalNum where totalnumber = '0'
+	</delete>
+
+	<insert id="add1" parameterType="Storetotal">
+		insert into StoreTotalNum (totalnumber, key, userid)
+		values (1,#{key}, #{userid })
+	</insert>
+	<insert id="add2" parameterType="Storetotal">
+		insert into StoreTotalNum (totalnumber, key, userid)
+		values (
+		(#{totalnumber}),
+		(#{key}),
+		(#{userid })
+		)
+	</insert>
+	<select id="getmynum" resultType="int">
+		select totalnumber from storetotalnum where userid=#{userid}
+	</select>
+	<select id="selectnum" resultType="int">
+		select totalnumber from storetotalnum where key=#{key}
+	</select>
+	
+
+</mapper>

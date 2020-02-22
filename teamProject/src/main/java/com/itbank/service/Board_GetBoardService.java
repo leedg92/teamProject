@@ -1,0 +1,38 @@
+package com.itbank.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.itbank.dao.CommunityVO;
+import com.itbank.dao.CommunityDAO;
+
+@Service
+public class Board_GetBoardService {
+	
+	@Autowired private CommunityDAO dao;
+
+	
+	public List<CommunityVO> getBoardList(int start, int end) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		map.put("start", start);
+		map.put("end", end);
+
+		return dao.getBoardList(map);
+	}
+
+	public CommunityVO getImageBLOB(String filename) {
+		return dao.selectImageBLOB(filename);
+	}
+
+	public CommunityVO getBoard(int bnum) {
+		return dao.getBoard(bnum);
+	}
+	public List<CommunityVO> getBoardList() {
+		return dao.getBoardList();
+	}
+}

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="MemberDAO">
+	
+	<select id="memberList" resultType="member">   <!-- 반환 자료가 여러개이면 알아서 LIST로 반환한다 -->
+		select * from membertable
+	</select>
+	
+	<select id="memberById" parameterType="String" resultType="member">
+		select * from membertable where userid = #{userid}
+	</select>
+	
+	<select id="memberByEmail" parameterType="String" resultType="member">
+		select * from membertable where email = #{email}
+	</select>
+		
+	<insert id="join" parameterType="member">		<!-- 회원가입 -->
+		insert into membertable (userid, userpw, username, phone, gender, email, membertype)
+		values (#{userid}, #{userpw}, #{username}, #{phone}, #{gender}, #{email}, #{membertype} ) 
+	</insert>
+	
+	<update id="update" parameterType="member">		<!-- 회원정보 수정 -->
+		update membertable
+		set username = #{username},
+			phone = #{phone},
+			gender = #{gender},
+			email = #{email }
+		where
+			userid = #{userid}
+	</update>
+	
+	<update id="setNewPw" parameterType="hashmap">		<!-- 비밀번호 변경 -->
+		update membertable
+		set
+			userpw = #{inputpass}
+		where
+			userid = #{userid}
+	</update>
+	<!-- 
+		1. 파라미터는 하나만 받을 수 있으므로, 변수이름과 변수값을 활용한 map을 파라미터로 사용한다
+		2. hash map을 파라미터로 지정하면, <input name="">이 key, 사용자 입력값이 value가 된다
+		3. ${ } 형식은 문자열을 ''없이 그대로 맵핑한다
+	 -->
+	
+
+	
+	<delete id="deleteMember" parameterType="hashmap">
+		delete membertable
+		where userid = #{userid} and userpw = #{inputpass}
+	</delete>
+	
+	<select id="getAllMyrownum" parameterType="hashmap" resultType="int">
+		select max(rownum) from community where userid = #{userid} 
+	</select>
+	
+</mapper>
+

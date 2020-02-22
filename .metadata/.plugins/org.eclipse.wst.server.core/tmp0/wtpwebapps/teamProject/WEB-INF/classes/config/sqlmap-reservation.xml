@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+<mapper namespace="reserDAO">
+	<insert id="reser" parameterType="reservation">
+		insert into reservation(resdate, reshour, resname, respeople, resnum, key, userid, storename)
+		values (#{resdate}, #{reshour}, #{resname}, #{respeople}, #{resnum}, #{key}, #{userid}, #{storename})
+	</insert>
+
+	<select id="user" resultType="reservation">
+		select * from reservation where resname = #{resname}
+	</select>
+	
+	<update id="update" parameterType="hashmap">
+		update reservation
+		set
+			${column} = #{val}
+		where
+			resname = #{resname}
+	</update>
+	
+	
+	<delete id="delete" parameterType="reservation">
+		delete from reservation where resname = #{resname} and key = #{key}
+	
+	</delete>
+	
+	<select id="getReserListByDate" parameterType="hashmap" resultType="reservation">
+		select * from reservation where key=${key} and resdate=#{date}
+	</select>
+	
+	<select id="getMyReserList" parameterType="String" resultType="reservation" >
+		select * from reservation where userid=#{userid}
+	</select>
+</mapper>

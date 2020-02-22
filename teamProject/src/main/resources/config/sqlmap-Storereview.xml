@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="StoreReviewDAO">
+
+	<insert id="Store" parameterType="hashmap">
+		insert into StoreReview (ORG_FILE_NAME, STORED_FILE_NAME, FILESIZE, writer,
+		content, score, key)
+		values (#{ORG_FILE_NAME, jdbcType=VARCHAR}, #{STORED_FILE_NAME,
+		jdbcType=VARCHAR}, #{FILESIZE, jdbcType=VARCHAR}, #{writer,
+		jdbcType=VARCHAR}, #{content, jdbcType=VARCHAR}, #{score,
+		jdbcType=VARCHAR}, #{key, jdbcType=INTEGER})
+	</insert>
+		 
+<select id="Storereview" resultType="Storereview">
+		select * from StoreReview where key=#{key} order by key desc
+	</select>
+
+	<select id="avg" resultType="double">
+		SELECT avg(score) FROM StoreReview where key=#{key}
+	</select>
+		 
+		 <select id="getMyStoreReview" resultType="Storereview" parameterType="Integer">
+		 	select * from StoreReview where key=#{key}
+		 </select>
+		 
+		 <select id="getMyReviewList" resultType="Storereview" parameterType="String">
+		 	select * from StoreReview where writer=#{userid}
+		 </select>
+
+</mapper>

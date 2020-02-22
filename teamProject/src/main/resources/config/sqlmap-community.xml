@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CommunityDAO">
+	<select id="getBoardCount" resultType="int">
+		select count(*) from community where deleted = 0
+	</select>
+	<select id="getMaxBoardNum" resultType="int">
+		SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'BNUMSEQ'
+	</select>
+
+
+	<select id="getBoardList" resultType="CommunityVO">
+		<![CDATA[ select * from (select rownum as st, alllist.* from 
+				(select * from community where title not like '#__%' escape '#' order by bnum desc) alllist
+				where rownum <= #{end}) where st >= #{start}]]> 
+	</select>
+
+	<insert id="upload" parameterType="hashmap">
+		insert into community (ORG_FILE_NAME, STORED_FILE_NAME, FILEDATA,
+		userid, title, username, context, deleted, address) values (#{ORG_FILE_NAME},
+		#{STORED_FILE_NAME}, #{FILEDATA}, #{userid}, #{title}, #{username},
+		#{context}, 0, #{address})
+	</insert>
+	
+	<insert id="cupload" parameterType="hashmap">
+		insert into cimage (ORG_FILE_NAME, STORED_FILE_NAME, FILEDATA,
+		bnum, deleted) 
+		values (#{ORG_FILE_NAME}, #{STORED_FILE_NAME}, #{FILEDATA}, (select bnum from community where STORED_FILE_NAME = #{STORED_FILE_NAME}), 0)
+	</insert>
+	
+
+	<select id="selectImageBLOB" resultType="CommunityVO"
+		parameterType="String">
+		select * from community where STORED_FILE_NAME = #{FILENAME}
+		<!-- select * from community where bnum = #{bnum} -->
+	</select>
+
+	<select id="getBoard" resultType="CommunityVO">
+		select * from community where
+		bnum = #{bnum}
+	</select>
+
+	<update id="deleteBoard">
+		update community set deleted = 1 where bnum = #{bnum}
+	</update>
+	
+	<update id="deleteImage">
+		update cimage set deleted = 1 where bnum = #{bnum}
+	</update>
+
+	<update id="modifyBoard" parameterType="hashmap">
+		update community set
+		title = #{title}, context = #{context} where bnum = #{bnum}
+	</update>
+	
+	<update id="hitsPlus" parameterType="int">
+		update community set hits = (select hits from community where bnum = #{bnum})+1 where bnum = #{bnum}
+	</update>
+	
+	<select id="myComuList" resultType="CommunityVO" parameterType="String">
+		select * from community where userid = #{userid} 
+	</select>	
+		<select id="getLikeNum" parameterType="hashmap" resultType="int">
+		select likenum from COMMUNITY_ISLIKE where bnum = #{bnum} and userid = #{userid}
+	</select>
+	
+	<insert id="like" parameterType="hashmap">
+		insert into community_islike (bnum, userid) values (#{bnum}, #{userid})
+	</insert>
+	
+	<delete id="dislike" parameterType="int">
+		delete from community_islike where likenum = #{likenum}
+	</delete>
+	
+	<select id="likeCheck" resultType="int" parameterType="hashmap">
+		select count(*) from community_islike where bnum = #{bnum} and userid = #{userid}
+	</select>
+	
+	<select id="countLike" resultType="int">
+		select count(*) from community_islike where bnum = #{bnum}
+	</select>
+	
+	<delete id="deleteLike" parameterType="int">
+		delete from community_islike where bnum = #{bnum}
+	</delete>
+</mapper>

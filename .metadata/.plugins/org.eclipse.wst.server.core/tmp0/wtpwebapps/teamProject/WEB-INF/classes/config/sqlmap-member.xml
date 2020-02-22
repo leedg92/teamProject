@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+	"-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="MemberDAO">
+	
+	<select id="memberList" resultType="member">   <!-- 반환 자료가 여러개이면 알아서 LIST로 반환한다 -->
+		select * from membertable
+	</select>
+	
+	<select id="memberById" parameterType="String" resultType="member">
+		select * from membertable where userid = #{userid} and deleted=0
+	</select>
+	
+	<select id="memberByEmail" parameterType="String" resultType="member">
+		select * from membertable where email = #{email}
+	</select>
+		
+	<insert id="join" parameterType="member">		<!-- 회원가입 -->
+		insert into membertable (userid, userpw, username, phone, gender, email, membertype)
+		values (#{userid}, #{userpw}, #{username}, #{phone}, #{gender}, #{email}, #{membertype} ) 
+	</insert>
+	
+	<update id="updateMember" parameterType="member">		<!-- 회원정보 수정 -->
+		update membertable
+		set username = #{username},
+			phone = #{phone},
+			gender = #{gender},
+			email = #{email }
+		where
+			userid = #{userid}
+	</update>
+	
+	<update id="setNewPw" parameterType="hashmap">		<!-- 비밀번호 변경 -->
+		update membertable
+		set
+			userpw = #{inputpass}
+		where
+			userid = #{userid}
+	</update>
+	
+	<select id="deleteMember" parameterType="String">
+		update membertable
+		set
+			deleted = -1
+		where userid = #{userid}
+	</select>
+	
+	<select id="getAllMyrownum" parameterType="hashmap" resultType="integer">
+		select max(rownum) from ${type} where userid = #{userid} 
+	</select>
+	<select id="getMyReviewnum" parameterType="hashmap" resultType="integer">
+		select max(rownum) from storereview where writer = #{userid}
+	</select>
+	
+	<select id="getAllMyStoreReviewnum" parameterType="hashmap" resultType="integer">
+		select max(rownum) from ${type} where key= #{key}
+	</select>
+	
+	<update id="insertStoreComember" parameterType="String">
+		update membertable 
+		set
+			store = 'o'
+		where
+			userid = #{userid}
+	</update>
+</mapper>
+

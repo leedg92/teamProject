@@ -1,0 +1,28 @@
+package com.itbank.interceptor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+public class loginInterceptor extends HandlerInterceptorAdapter{
+
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
+		HttpSession session = request.getSession();
+		String next = request.getRequestURI().substring(request.getContextPath().length()+1);
+		if (next.contains("admin") && session.getAttribute("manager") == null) {
+			response.sendRedirect(request.getContextPath());
+			return false;
+		}
+		else if (session.getAttribute("member") != null || session.getAttribute("manager") != null) return true;
+		else {
+			response.sendRedirect(request.getContextPath()+"/login?next="+next);
+			return false;
+		}
+
+	}
+
+}
